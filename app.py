@@ -7,6 +7,14 @@ class Satellite(SpaceEntity):
     def receive_signal(self, packet: Packet):
         print(f"[{self.name}] Received: {packet}")
 
+# PermanentError: Satellite communication permanently lost
+class LinkTerminatedError(CommsError):
+    pass
+
+# OutOfRangeError: Target is too far away
+class OutOfRangeError(CommsError):
+    pass
+
 # Function for sending messages with spaces, even when an error occurs
 def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
     while True:
