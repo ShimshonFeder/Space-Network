@@ -5,7 +5,13 @@ from space_network_lib import *
 class Satellite(SpaceEntity):
 
     def receive_signal(self, packet: Packet):
-        print(f"[{self.name}] Received: {packet}")
+        # Checked if type massage is RelayPacket
+        if isinstance(packet, RelayPacket):
+            inner_packet = packet.data
+            print(f"Unwrapping and forwarding to {inner_packet.receiver}" )
+
+        else:
+            print(f"Final destination reached: {packet.data}" )
 
 # Error: Satellite communication is broken
 class BrokenConnectionError(CommsError):
