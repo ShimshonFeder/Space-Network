@@ -23,8 +23,8 @@ def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
             print("Corrupted, retrying...")
 
 # Instance for a spce network for transmitting massages
-# In level 2 change instance to level 2
-space_net_1 = SpaceNetwork(level=2)
+# In level 3 change instance to level 2
+space_net_1 = SpaceNetwork(level=3)
 
 # Two instance of sate llite
 sat_1  = Satellite("Sat1", 100)
