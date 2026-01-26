@@ -7,6 +7,10 @@ class Satellite(SpaceEntity):
     def receive_signal(self, packet: Packet):
         print(f"[{self.name}] Received: {packet}")
 
+# Error: Satellite communication is broken
+class BrokenConnectionError(CommsError):
+    pass
+
 # Function for sending messages with spaces, even when an error occurs
 def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
     while True:
@@ -22,9 +26,19 @@ def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
         except DataCorruptedError:
             print("Corrupted, retrying...")
 
+        # Error: Satellite communication permanently lost
+        except LinkTerminatedError:
+            print("Link lost")
+            raise BrokenConnectionError
+
+        # Error: Target satellite out of range
+        except OutOfRangeError:
+            print("Target out of range")
+            raise BrokenConnectionError
+
 # Instance for a spce network for transmitting massages
-# In level 2 change instance to level 2
-space_net_1 = SpaceNetwork(level=2)
+# In level 3 change instance to level 2
+space_net_1 = SpaceNetwork(level=3)
 
 # Two instance of sate llite
 sat_1  = Satellite("Sat1", 100)
@@ -34,4 +48,9 @@ sat_2  = Satellite("Sat2", 200)
 msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
 
 # Send message with function sending massage
-attempt_transmission(space_net_1, msg_1)
+# # Catches errors using try/except, prints a warning
+# # prevents the program from crashing
+try:
+    attempt_transmission(space_net_1, msg_1)
+except BrokenConnectionError:
+    print("Transmission failed!")
