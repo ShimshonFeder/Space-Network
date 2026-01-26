@@ -33,5 +33,5 @@ sat_2  = Satellite("Sat2", 200)
 # Create a massage(packet)
 msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
 
-# Send message with our space network
-space_net_1.send(msg_1)
+# Send message with function sending massage
+attempt_transmission(space_net_1, msg_1)
