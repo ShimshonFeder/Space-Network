@@ -5,17 +5,36 @@ from space_network_lib import *
 class Satellite(SpaceEntity):
 
     def receive_signal(self, packet: Packet):
-        print(f"[{self.name}] Received: {packet}")
+        # Checked if type massage is RelayPacket
+        if isinstance(packet, RelayPacket):
+            inner_packet = packet.data
+            print(f"Unwrapping and forwarding to {inner_packet.receiver}" )
+            attempt_transmission(inner_packet)
+        else:
+            print(f"Final destination reached: {packet.data}" )
+
+# class of earth, inherits from SpaceEntity
+class Earth(SpaceEntity):
+    def receive_signal(self, packet: Packet):
+        pass
 
 # Error: Satellite communication is broken
 class BrokenConnectionError(CommsError):
     pass
 
+# Packet class using a relay satellite (proxy) for message transmission
+class RelayPacket(Packet):
+    def __init__(self, paket_to_relay, sender, proxy):
+        super().__init__(paket_to_relay, sender, proxy)
+
+    def __repr__(self):
+        return f"RelayPacket (Relaying [{self.data}] to {self.receiver} from {self.sender})"
+
 # Function for sending messages with spaces, even when an error occurs
-def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
+def attempt_transmission(packet: Packet):
     while True:
         try:
-            space_network.send(packet)
+            space_net_1.send(packet)
             break
         # Error: Temporary interruption detected
         # waiting two second before retrying
@@ -44,13 +63,17 @@ space_net_1 = SpaceNetwork(level=3)
 sat_1  = Satellite("Sat1", 100)
 sat_2  = Satellite("Sat2", 200)
 
-# Create a massage(packet)
-msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
+# Instance of earth
+earth = Earth("Earth", 0)
 
-# Send message with function sending massage
+# Create a massage(packet), and proxy to send from earth
+p_final = Packet("Hello from Earth!", sat_1, sat_2)
+p_earth_to_sat1 = RelayPacket(p_final, earth, sat_1)
+
+# Send message with function sending message
 # # Catches errors using try/except, prints a warning
 # # prevents the program from crashing
 try:
-    attempt_transmission(space_net_1, msg_1)
+    attempt_transmission(p_earth_to_sat1)
 except BrokenConnectionError:
     print("Transmission failed!")
