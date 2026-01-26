@@ -8,7 +8,7 @@ class Satellite(SpaceEntity):
         # Checked if type massage is RelayPacket
         if isinstance(packet, RelayPacket):
             inner_packet = packet.data
-            print(f"Unwrapping and forwarding to {inner_packet.receiver}" )
+            print(f"[{self.name}] Unwrapping and forwarding to {inner_packet.receiver}" )
             attempt_transmission(inner_packet)
         else:
             print(f"Final destination reached: {packet.data}" )
