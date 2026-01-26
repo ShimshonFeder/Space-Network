@@ -69,8 +69,10 @@ sat_4  = Satellite("Sat4", 400)
 earth = Earth("Earth", 0)
 
 # Create a massage(packet), and proxy to send from earth
-p_final = Packet("Hello from Earth!", sat_1, sat_2)
-p_earth_to_sat1 = RelayPacket(p_final, earth, sat_1)
+p_final = Packet("Hello from Earth!", sat_3, sat_4)
+p_sat2_to_sat3 = RelayPacket(p_final, sat_2, sat_3)
+p_sat1_to_sat2 = RelayPacket(p_sat2_to_sat3, sat_1, sat_2)
+p_earth_to_sat1 = RelayPacket(p_sat1_to_sat2, earth, sat_1)
 
 # Send message with function sending message
 # # Catches errors using try/except, prints a warning
