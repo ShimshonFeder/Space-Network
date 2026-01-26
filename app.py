@@ -1,10 +1,26 @@
-from space_network_lib import SpaceEntity, Packet, SpaceNetwork
+import time
+from space_network_lib import *
 
 # class of sate llite, inherits from SpaceEntity
 class Satellite(SpaceEntity):
 
     def receive_signal(self, packet: Packet):
         print(f"[{self.name}] Received: {packet}")
+
+# Function for sending messages with spaces, even when an error occurs
+def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
+    while True:
+        try:
+            space_network.send(packet)
+            break
+        # Error: Temporary interruption detected
+        # waiting two second before retrying
+        except TemporalInterferenceError:
+            print("Interference, waiting...")
+            time.sleep(2)
+        # Error: Random error occurred – retrying the operation
+        except DataCorruptedError:
+            print("Corrupted, retrying...")
 
 # Instance for a spce network for transmitting massages
 # In level 2 change instance to level 2
