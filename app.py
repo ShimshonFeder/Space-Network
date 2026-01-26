@@ -26,6 +26,16 @@ def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
         except DataCorruptedError:
             print("Corrupted, retrying...")
 
+        # Error: Satellite communication permanently lost
+        except LinkTerminatedError:
+            print("Link lost")
+            raise BrokenConnectionError
+
+        # Error: Target satellite out of range
+        except OutOfRangeError:
+            print("Target out of range")
+            raise BrokenConnectionError
+
 # Instance for a spce network for transmitting massages
 # In level 3 change instance to level 2
 space_net_1 = SpaceNetwork(level=3)
