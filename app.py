@@ -11,6 +11,14 @@ class Satellite(SpaceEntity):
 class BrokenConnectionError(CommsError):
     pass
 
+# Packet class using a relay satellite (proxy) for message transmission
+class RelayPacket(Packet):
+    def __init__(self, paket_to_relay, sender, proxy):
+        super().__init__(paket_to_relay, sender, proxy)
+
+    def __repr__(self):
+        return f"RelayPacket (Relaying [{self.data}] to {self.receiver} from {self.sender})"
+
 # Function for sending messages with spaces, even when an error occurs
 def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
     while True:
