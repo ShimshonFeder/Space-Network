@@ -48,4 +48,9 @@ sat_2  = Satellite("Sat2", 200)
 msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
 
 # Send message with function sending massage
-attempt_transmission(space_net_1, msg_1)
+# # Catches errors using try/except, prints a warning
+# # prevents the program from crashing
+try:
+    attempt_transmission(space_net_1, msg_1)
+except BrokenConnectionError:
+    print("Transmission failed!")
