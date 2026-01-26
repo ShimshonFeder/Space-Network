@@ -9,7 +9,7 @@ class Satellite(SpaceEntity):
         if isinstance(packet, RelayPacket):
             inner_packet = packet.data
             print(f"Unwrapping and forwarding to {inner_packet.receiver}" )
-
+            attempt_transmission(packet)
         else:
             print(f"Final destination reached: {packet.data}" )
 
@@ -26,10 +26,10 @@ class RelayPacket(Packet):
         return f"RelayPacket (Relaying [{self.data}] to {self.receiver} from {self.sender})"
 
 # Function for sending messages with spaces, even when an error occurs
-def attempt_transmission(space_network: SpaceNetwork, packet: Packet):
+def attempt_transmission(packet: Packet):
     while True:
         try:
-            space_network.send(packet)
+            space_net_1.send(packet)
             break
         # Error: Temporary interruption detected
         # waiting two second before retrying
@@ -61,10 +61,10 @@ sat_2  = Satellite("Sat2", 200)
 # Create a massage(packet)
 msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
 
-# Send message with function sending massage
+# Send message with function sending message
 # # Catches errors using try/except, prints a warning
 # # prevents the program from crashing
 try:
-    attempt_transmission(space_net_1, msg_1)
+    attempt_transmission(msg_1)
 except BrokenConnectionError:
     print("Transmission failed!")
