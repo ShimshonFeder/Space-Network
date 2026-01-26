@@ -9,7 +9,7 @@ class Satellite(SpaceEntity):
         if isinstance(packet, RelayPacket):
             inner_packet = packet.data
             print(f"Unwrapping and forwarding to {inner_packet.receiver}" )
-            attempt_transmission(packet)
+            attempt_transmission(inner_packet)
         else:
             print(f"Final destination reached: {packet.data}" )
 
@@ -66,13 +66,14 @@ sat_2  = Satellite("Sat2", 200)
 # Instance of earth
 earth = Earth("Earth", 0)
 
-# Create a massage(packet)
-msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
+# Create a massage(packet), and proxy to send from earth
+p_final = Packet("Hello from Earth!", sat_1, sat_2)
+p_earth_to_sat1 = RelayPacket(p_final, earth, sat_1)
 
 # Send message with function sending message
 # # Catches errors using try/except, prints a warning
 # # prevents the program from crashing
 try:
-    attempt_transmission(msg_1)
+    attempt_transmission(p_earth_to_sat1)
 except BrokenConnectionError:
     print("Transmission failed!")
