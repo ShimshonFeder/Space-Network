@@ -59,9 +59,11 @@ def attempt_transmission(packet: Packet):
 # In level 3 change instance to level 2
 space_net_1 = SpaceNetwork(level=3)
 
-# Two instance of sate llite
+# Instance of sate llite
 sat_1  = Satellite("Sat1", 100)
 sat_2  = Satellite("Sat2", 200)
+sat_3  = Satellite("Sat3", 300)
+sat_4  = Satellite("Sat4", 400)
 
 # Instance of earth
 earth = Earth("Earth", 0)
