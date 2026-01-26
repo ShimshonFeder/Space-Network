@@ -13,6 +13,11 @@ class Satellite(SpaceEntity):
         else:
             print(f"Final destination reached: {packet.data}" )
 
+# class of earth, inherits from SpaceEntity
+class Earth(SpaceEntity):
+    def receive_signal(self, packet: Packet):
+        pass
+
 # Error: Satellite communication is broken
 class BrokenConnectionError(CommsError):
     pass
