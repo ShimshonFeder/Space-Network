@@ -63,6 +63,9 @@ space_net_1 = SpaceNetwork(level=3)
 sat_1  = Satellite("Sat1", 100)
 sat_2  = Satellite("Sat2", 200)
 
+# Instance of earth
+earth = Earth("Earth", 0)
+
 # Create a massage(packet)
 msg_1 = Packet("Hello from spaces!", sat_1, sat_2)
 
