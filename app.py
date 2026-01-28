@@ -54,15 +54,17 @@ def attempt_transmission(packet: Packet):
             print("Target out of range")
             raise BrokenConnectionError
 
+# Sort satellites by distance from Earth (small to big)
 def sort_satellites(list_sat: list):
-    # Sort satellites by distance from Earth (small to big)
     for i in range(len(list_sat)):
         for j in range(len(list_sat) - 1):
             if list_sat[j].distance_from_earth > list_sat[j + 1].distance_from_earth:
                 list_sat[j], list_sat[j + 1] = list_sat[j + 1], list_sat[j]
+
+    # Return list of satellites
     return list_sat
 
-
+# Builds a relay packet to forward the message through satellites until it reaches the receiver.
 def build_relay_packet(path_rev: list[Satellite], packet: Packet):
     # sent from the satellite closest to the receiver
     inner  = Packet(packet.data, path_rev[1], path_rev[0])
@@ -72,20 +74,20 @@ def build_relay_packet(path_rev: list[Satellite], packet: Packet):
     # Return the fully wrapped packet
     return inner
 
-
 def smart_send_packet(sat_list: list[Satellite], packet: Packet):
-    # Get sorted satellite list
+    # Sort satellites by distance from Earth
     sort_list = sort_satellites(sat_list)
 
     sender = packet.sender
     receiver = packet.receiver
-
     new_path = [receiver]
-    if sender.distance_from_earth < receiver.distance_from_earth:
 
+    # Only build path if receiver is farther than sender
+    if sender.distance_from_earth < receiver.distance_from_earth:
         i = sort_list.index(sender)
         proxy = receiver
 
+        # Find satellites that can forward the packet
         while proxy != sender:
             if sort_list[i].distance_from_earth + 150 >= proxy.distance_from_earth:
                 proxy = sort_list[i]
@@ -93,7 +95,10 @@ def smart_send_packet(sat_list: list[Satellite], packet: Packet):
                 i = sort_list.index(sender)
             else:
                 i += 1
+
+    # Build RelayPacket from the new path
     return build_relay_packet(new_path, packet)
+
 
 
 # Instance for a spce network for transmitting massages
@@ -114,17 +119,14 @@ earth = Earth("Earth", 0)
 # Proxy
 list_sat = [earth, sat_1, sat_2, sat_3, sat_4, sat_5, sat_6, sat_7]
 
-
-# Send message with function sending message
-# # Catches errors using try/except, prints a warning
-# # prevents the program from crashing
-
-p_msg = Packet("hello", earth, sat_7)
+# Create a message to send
+p_msg = Packet("hello from earth", earth, sat_7)
 packet_send = smart_send_packet(list_sat, p_msg)
 
+# Catches errors using try/except, prints a warning
+# prevents the program from crashing
 try:
     attempt_transmission(packet_send)
 except BrokenConnectionError:
     print("Transmission failed!")
 
-# Test sort
